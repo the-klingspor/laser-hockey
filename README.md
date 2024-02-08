@@ -1,6 +1,6 @@
 # laser-hockey-env
 
-This repository contains two version of a hockey-like game
+This repository contains the approaches and report of the Codeyotes for the 2023 laser-hockey reinforcement learning challenge at the University of Tübingen. Our team consisted of Balint, Joschi and Enes. In the final tournament our two competing agents placed in 2nd and 3rd place among all 89 agents participating. They were the two strongest model-free agents, getting only beaten by an implementation based on MuZero. Our report can be found in ``/report``.
 
 ## Install
 
