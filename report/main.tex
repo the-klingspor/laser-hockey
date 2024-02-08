@@ -1,0 +1,301 @@
+\documentclass[11pt]{article}
+\usepackage{booktabs}
+\usepackage{times}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{url}            % simple URL typesetting
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{amsmath}       % blackboard math symbols
+\usepackage{amssymb}
+\usepackage{float}
+
+\usepackage{lipsum}
+
+\usepackage{geometry}
+\geometry{left=2.8cm,right=2.8cm,top=2.6cm,bottom=2.6cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{hyperref}% should be the last package you include
+
+\newcommand{\theteam}{}
+\newcommand{\team}[1]{\def\theteam{#1}}
+
+
+\fancyhead[L]{\theteam}
+\fancyhead[R]{\thepage}
+\cfoot{}
+
+\setlength{\parindent}{0pt}
+
+\team{Arizona Codeyotes: Joschka Strüber, Bálint Mucsányi, Enes Duran}
+\title{RL-Course 2023: Final Project Report}
+\author{\theteam}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+In the final project of the Reinforcement Learning course of the University of Tübingen offered in Summer Semester 2023, we were tasked to implement agents with nontrivial contributions that successfully play against opponents with a wide variety of playstyles in the \texttt{laser-hockey} environment. Being a two-player game, the value of individual states can highly vary based on the opponent, highlighting the high aleatoric uncertainty (inherent noise in the data-generating process) that one has to face when developing robust agents. To solve this challenging task, we set up a team of three members, Joschka Strüber, Bálint Mucsányi, and Enes Duran, and decided to implement the following algorithms:
+\begin{itemize}
+    \item \textbf{Joschka Strüber}: the Twin Delayed Deep Deterministic policy gradient algorithm (TD3)~\cite{fujimoto2018:TD3};
+    \item \textbf{Bálint Mucsányi}: the full Rainbow algorithm~\cite{Hessel2018:Rainbow};
+    \item \textbf{Enes Duran}: the Soft Actor-Critic algorithm (SAC)~\cite{HaarnojaAbbeelLevine2018:SAC}.
+\end{itemize}
+
+We decided on these algorithms mainly because of their algorithmic differences while being notably performant. TD3 is a highly robust and widely used actor-critic method using a continuous action space. Rainbow is a similarly popular off-policy algorithm with a discrete action space that contains various extensions to the seminal Deep Q-Network (DQN) paper~\cite{mnih2015humanlevel}. SAC is an entropy-based off-policy algorithm demonstrating the effectiveness of balancing exploration and exploitation \cite{HaarnojaAbbeelLevine2018:SAC}. Understanding how these notably different algorithms behave in the \texttt{laser-hockey} environment and what components are most useful/harmful for the task proved to be an exciting and demanding problem.
+
+\subsection{Environment}\label{subsec:environment}
+
+The \texttt{laser-hockey} environment is a custom environment based on the \texttt{gymnasium}~\cite{towers_gymnasium_2023} Python package. Two agents play against each other, each controlling a simple hockey stick, trying to hit the hockey puck to score a goal. The environment is fully symmetric: the agents obtain perfectly mirrored states from the environment and therefore no side switching is needed when developing the algorithms. A particular state returned by the environment includes the $(x, y)$ coordinate of the players and the puck; the angle, angular velocity and linear velocity of the players; and the linear velocity of the puck. For the challenge, we were required to use the \texttt{keep-mode} variant of the environment in which the puck sticks to the hockey sticks and players can decide when to shoot the puck. In detail, the action space is a four-dimensional box $\in [-1, 1]^4$ containing the force applied in the $x$ and $y$ directions, the torque applied to the hockey stick, and the thresholded decision of shooting the puck or not. The default reward returned by the environment comprises the sparse reward $\in \{-10, 0, 10\}$ given for losing, having a draw, and winning, respectively; and the per-frame \texttt{reward\_closeness\_to\_puck} component that punishes being far away from the puck.
+
+Our complete implementation, including code necessary for training on the tournament server, is available at TODO(Joschi, Bálint). To clearly separate the contributions of the team members, we provide a list of them below per person.
+
+\medskip
+
+\textbf{Bálint Mucsányi}: \texttt{Algorithm}, \texttt{Agent}, \texttt{ReplayBuffer}, \texttt{BaselineReward}, \texttt{MLP}, \texttt{Noisy Linear}, and \texttt{DistributionalReward} classes; complete Rainbow algorithm; action space augmentation; common utilities; training on the tournament server.
+
+\medskip
+
+\textbf{Joschka Strüber}: \texttt{SparseReward}, \texttt{SimpleReward}, and \texttt{PrioritizedReplayBuffer} classes; complete TD3 algorithm; code for evaluation; logging using \texttt{wandb}~\cite{wandb}; state space augmentation; pink noise.
+
+\medskip
+
+\textbf{Enes Duran}: Complete SAC algorithm and its variants.
+
+\medskip
+
+Next we discuss each algorithm in detail, including descriptions of the methods used and experimental evaluation.
+
+\input{td3}
+
+\input{rainbow}
+
+\input{sac}
+
+\section{Conclusion}
+
+In our report, we aimed to compare three notably different off-policy reinforcement learning algorithms in the \texttt{laser-hockey} environment. According to our results, not all of the components of the Rainbow algorithm led to a performance increase but there were beneficial ones that allowed the agent to be the second-best player in the tournament. The discussed modifications to the MDP also led to considerable improvements and were the core reason of the algorithm's success. We can observe that discretizing the action space does \emph{not} hurt performance when the action space is chosen carefully. This resolved our main concerns with DQN-based agents.
+
+TD3 has proven to be a strong approach in this dynamic environment with a continuous action space. It was able to consistently learn to defeat the two \texttt{BasicOpponents} in a small number of steps. Surprisingly, pink action noise led to a significant decrease in performance and convergence speed across all experiments. A much harder task has been to not only win against seen agents, but also generalize to unknown opponents. For this, self-training and in particular playing against other previously trained, strong agents has been tremendously helpful.
+
+All of these experiments and approaches have helped us to enter the two by far best model-free reinforcement learning agents to the final tournament (Rainbow and TD3), claiming a strong second place behind \texttt{MuZero}.
+
+\bibliographystyle{abbrv}
+\bibliography{main}
+
+\appendix
+
+\newpage\null
+%\thispagestyle{empty}\newpage
+
+\section{Appendix TD3}
+
+\subsection{Hyperparameters}
+
+\begin{table}[h]
+    \centering
+    \caption{Hyperparameters that were used for all runs with TD3 unless mentioned otherwise in the report.}
+    \label{tab:td3_params}
+    \begin{tabular}{|l|l|}
+    \hline
+         \textbf{Name} & \textbf{Value} \\ \hline
+         Architecture & 256 $\times$ 256 \\
+         Activation hidden & ReLU \\
+         Activation actor & TanH \\
+         Reward & \texttt{Weighted} \\
+         Discount factor $\gamma$ & $0.95$ \\
+         Batch size $B$ & 128 \\
+         Learning starts & 50,000 \\
+         Target policy noise $\Tilde{\sigma}$ & 0.2 \\
+         Target noise clip $c$ & 0.5 \\
+         Action noise $\sigma$ & 0.1 \\
+         Policy delay $d$ & $2$ \\
+         Polyak parameter $\tau$ & $5 \cdot 10^{-3}$ \\
+         Learning rate critics & $10^{-4}$ \\
+         Learning rate actor & $10^{-4}$ \\
+         Buffer size base & $200,000$ \\
+         Training steps base N & $3,000,000$ \\
+         Buffer size advanced & $1,000,000$ \\
+         Training steps advanced N & $12,000,000$ \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Full Ablation Study}
+
+\begin{table}[h]
+    \centering
+    \caption{Full ablation study of TD3 including three architectures and activation functions. The results show the average win percentages and standard deviations across five seeds against the weak and strong \texttt{BasicOpponents}.}
+    \label{tab:td3_base_experiment_full}
+    \begin{tabular}{|c|c|c|c||l|l|} 
+    \hline
+    \textbf{Reward} & \textbf{Architecture} & \textbf{Activation} & \textbf{State Augm.} & \textbf{Weak Opponent} & \textbf{Strong Opponent} \\ \hline
+    Sparse & $256 \times 256$ & ReLU & / & $38.90\% \pm 22.19$ & $33.14\% \pm 15.75$ \\ 
+    Weighted & $256 \times 256$ & ReLU & / & $89.02\% \pm 20.37$ & $89.19\% \pm 19.05$ \\ 
+    Weighted & $128 \times 128$ & ReLU & / & $86.80\% \pm 17.28 $ & $85.68\% \pm 16.19$ \\ 
+    Weighted & $400 \times 300$ & ReLU & / & $97.22\% \pm  0.33$ & $85.12\% \pm 27.02$ \\
+    Weighted & $256 \times 256$ & Mish & / & $90.32\% \pm 10.61$ & $61.76\% \pm 11.65$ \\
+    Weighted & $256 \times 256$ & ReLU & \texttt{distance} & $\mathbf{99.06\% \pm 0.79}$ & $\mathbf{98.22\% \pm 0.97}$ \\
+    \hline
+    \end{tabular}
+\end{table}
+
+The full ablation study for TD3 can be found in Table~\ref{tab:td3_base_experiment_full}. All experiments used neural networks with two hidden, fully-connected layers for the actor and critics. We tested three architectures with $(128 \times 128)$ neurons, $(256 \times 256)$ and $(400 \times 300)$. The latter two perform both well on average, while the lower capacity one is a bit worse. We preferred $(256 \times 256)$, because it has the better win percentage against the strong opponent. 
+
+Next, we compared the previous best against the same approach, but with Mish instead of ReLU as activation \cite{misra2020MishAS}. Mish is a ReLU-like activation function that has been shown to consistently outperform ReLU and similar activation functions in computer vision tasks. In the \texttt{laser-hockey} environment we were not able to replicate these results and continued using ReLU.
+
+\subsection{Upper Confidence Bound}\label{subsec:ucb}
+
+Thanks to our extensive experiments, we ended up with a large number of agents that were candidates to be the final agent in the tournament. Unfortunately, selecting the best agent is very difficult, because the performance against the opponents is unknown before playing against them in the tournament. For this reason, we implemented the Upper Confidence Bound algorithm (UCB) \cite{agrawal1995SampleMB}. 
+
+In UCB, each agent $a_i$ of an ensemble is treated as a bandit that returns a reward drawn from a distribution $P_i$ upon being chosen as action $A_t$ in game $t$. The reward in our setting is the \texttt{winner} information. UCB chooses the bandit as the next action that has the highest expected reward, that is still realistic. In each game $t$ the agent is chosen as $A_t = \operatorname{argmax}_i \hat{\mu}_i(t-1) + \sqrt{\frac{2 \cdot \sigma^2 \log(t^3)}{T_i(t-1)}}$, where $\hat{\mu}_i(t-1)$ is the empirical mean of the rewards of agent $a_i$ in the first $t-1$ games, $\sigma$ controls the trade-off between exploration and exploitation and $T_i$ is the amount of times agent $a_i$ has been played. 
+
+%Over time, the UCB increases relatively for agents with a higher win percentage and agents that have not been played often.
+
+
+\section{Appendix Rainbow}\label{appendix:rainbow}
+
+\subsection{Discretized Actions}
+
+\begin{table}[H]
+\centering
+\caption{Basic discrete action space.}
+\begin{tabular}{cccc}
+\toprule
+\textbf{Linear force $x$} & \textbf{Linear force $y$} & \textbf{Torque} & \textbf{Shooting} \\
+\midrule
+-1 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & -1 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Advanced discrete action space.}
+\begin{tabular}{cccc}
+\toprule
+\textbf{Linear force $x$} & \textbf{Linear force $y$} & \textbf{Torque} & \textbf{Shooting} \\
+\midrule
+0 & 0 & 0 & 0 \\
+-1 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & -1 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 1 & 0 \\
+-1 & -1 & 0 & 0 \\
+-1 & 1 & 0 & 0 \\
+1 & -1 & 0 & 0 \\
+1 & 1 & 0 & 0 \\
+-1 & -1 & -1 & 0 \\
+-1 & -1 & 1 & 0 \\
+-1 & 1 & -1 & 0 \\
+-1 & 1 & 1 & 0 \\
+1 & -1 & -1 & 0 \\
+1 & -1 & 1 & 0 \\
+1 & 1 & -1 & 0 \\
+1 & 1 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & -1 & -1 & 0 \\
+0 & -1 & 1 & 0 \\
+0 & 1 & -1 & 0 \\
+0 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Hyperparameters}
+
+\begin{table}[H]
+    \centering
+    \caption{Agent hyperparameters used across the experiments. Set notation shows the set of values used in the experiments. $v_\text{min}$, $v_\text{max}$, and atom\_size are hyperparameters of the distributional approach.}
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    $v_\text{min}$ & -15 \\
+    $v_\text{max}$ & 15 \\
+    atom size & 51 \\
+    states dimensionality & \{18, 27\} \\
+    hidden layers & [512] \\
+    number of actions & \{8, 24\} \\
+    number of stacked observations & \{1, 4\} \\
+    activation function & ReLU \\
+    reward & \{baseline, ours\} \\
+    observation & \{baseline, augmented\} \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Algorithm hyperparameters. Set notation shows the set of values used in the experiments.}
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    batch size & 32 \\
+    max gradient norm & 10 \\
+    multi-step value & \{1, 3\} \\
+    train frequency & 4 \\
+    learning starts & 80,000 \\
+    Polyak $\tau$ & 1 \\
+    target update frequency & 1000 \\
+    max number of timesteps/episode & 250 \\
+    $\epsilon_\text{initial}$ & 1 \\
+    $\epsilon_\text{final}$ & 0.1 \\
+    exploration fraction & 0.0375 \\
+    $\gamma$ & 0.95 \\
+    total timesteps & 12,000,000 \\
+    number of evaluation episodes & 1000 \\
+    start pretrained delta & 500,000 \\
+    start self-play threshold & 0.9 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Buffer hyperparameters.}
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    $\alpha$ & 0.5 \\
+    $\beta_\text{start}$ & 0.4 \\
+    $\beta_\text{end}$ & 1 \\
+    buffer size & 500,000 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Optimizer hyperparameters.}
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    optimizer & Adam~\cite{kingma2017adam} \\
+    learning rate & 0.0001 \\
+    scheduler steps & [625,000; 1,000,000] \\
+    scheduler multiplicative factor & 0.5 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Tournament Architecture and Training}
+
+Considering the results in~\ref{subsubsec:advanced}, we decided to use a \textbf{dueling DQN architecture with prioritized experience replay} for the tournament. The algorithm was trained with self-training and also against previous strong agents of the team for 6-12 million steps, using multiple seeds and periodic evaluation against unseen agents. This procedure was repeated 4-5 times, starting from promising previous checkpoints and always including the previous best agents of the team (TD3 and SAC). The final model was also trained on the tournament server by using the previously described procedure but loading a random fraction of the tournament data every 100,000 steps to mix it with the transitions collected by the off-policy agent. Mixing the observations was crucial: fine-tuning only on tournament data deteriorated performance. Our final agent became the second-best agent in the entire tournament according to the leaderboard.
+
+\end{document}

@@ -1,0 +1,86 @@
+%\section{Twin Delayed Deep Deterministic Policy Gradient}
+\section{TD3}
+
+\subsection{Methods}
+
+Our first approach uses the off-policy algorithm Twin Delayed Deep Deterministic policy gradient \cite{fujimoto2018:TD3}. In the following section we will briefly introduce this approach along with additional techniques proposed to solve the \texttt{laser-hockey} environment. All presented ideas will be thoroughly evaluated and compared in Section~\ref{subsec:td3_eval}.
+
+During the tournament we have used a bandit-based Upper Confidence Bound approach to select the agent that performs best against the unknown, opposing agents \cite{agrawal1995SampleMB}. Due to space constraints this section has been moved to the appendix in Section~\ref{subsec:ucb}.
+
+\subsubsection{Twin Delayed Deep Deterministic Policy Gradient}
+
+Twin Delayed Deep Deterministic policy gradient (TD3) is an actor-critic based reinforcement learning algorithm that improves upon the earlier DDPG approach \cite{fujimoto2018:TD3, lillicrap16ddpg}. TD3 has one neural network as actor $\pi_{\phi}$ and two critics $Q_{\theta_1}, Q_{\theta_2}$, that estimate the Q-function for state-action pairs. The algorithm uses continuous actions, making it particularly useful for our environment where precise actions such as turning and moving are vital for defending your goal and scoring. Being an off-policy algorithm, TD3 is very suitable for a two-player game where fine-tuning on the tournament data can be the deciding factor. 
+
+Given an observation $s$ during training along, TD3 uses actor $\pi_{\phi}$ with exploration noise to choose the next action $a = \pi_{\phi} + \epsilon, \epsilon \sim \mathcal{N}(0, \sigma)$. After training, the actor can be used in a deterministic way without exploration noise. In each training step, a batch of $N$ transitions $(s, a, r, s')$ is sampled from replay buffer $\mathcal{D}$. To compute the current Q-values target policy smoothing regularization is used and the target network of the actor predicts the action for the next step. This is then used to compute the smoothed TD targets, whose mean squared error is minimized to optimize the critics $Q_{\theta_i}$:
+\begin{align*}
+    \Tilde{a} &= \pi_{\phi'}(s') + \epsilon, \quad \epsilon \sim \operatorname{clip}(\mathcal{N}(0, \Tilde{\sigma}), -c, c) \\
+    \operatorname{TD}(s, a, \Tilde{a}, r, s') &= (r + \gamma \min_{i=1,2} Q_{\theta'_i}(s', \Tilde{a})) - Q_{\theta_i}(s, a),
+\end{align*}
+
+where the target policy smoothing with clipped noise ensures that similar actions have similar Q-values. Taking the minimum of the two critics severely reduces overestimation of the Q-function. Next, the actor is updated using the deterministic policy gradient in a delayed way every $d$'th critic update:
+\begin{equation*}
+    \triangledown_{\phi} J(\phi) = \frac{1}{N} \sum \triangledown_a Q_{\theta_1}(s,a)|_{a=\pi_{\phi}}(s) \triangledown_{\phi} \pi_{\phi}(s)
+\end{equation*}
+
+ The delayed policy update reduces policy degradation caused by bad value estimates. All three target networks $\pi_{\phi'}$, $Q_{\theta'_1}$ and $Q_{\theta'_2}$ are updated with Polyak averaging using parameter $\tau \in (0,1)$.
+
+\subsubsection{Reward Optimization and State Space Augmentation}\label{subsubsec:state_space}
+
+As highlighted in Section~\ref{subsec:environment}, the default reward of the \texttt{laser-hockey} environment returns a canonical, sparse reward $\in \{-10, 0, 10\}$ depending on the outcome of a game with a modification using the \texttt{closeness\_to\_puck}. However, learning complex behavior with reinforcement learning agents using only sparse rewards is inherently difficult. In the case of \texttt{laser-hockey} the high frame rate causes large amounts of steps between the action that lead to shooting a goal and the moment the reward is received. 
+
+%This makes learning the right Q value of state action pairs difficult.
+
+To deal with this problem, the environment provides four points of information that can be used for proxy rewards: \texttt{winner} $\in \{-1, 0, 1\}$, \texttt{closeness\_to\_puck}, which punishes being too far away from the puck, $\texttt{touch\_puck}$, which rewards taking possession of the ball, and finally \texttt{puck\_direction}, that rewards if the puck is moving in the right direction.
+
+We evaluated 1000 games of the strong \texttt{BasicOpponent} playing against itself and used the mean cumulative absolute info values as weights for our \texttt{weighted\_reward} = \texttt{sparse\_reward} $+\, 0.05 \cdot \texttt{closeness\_to\_puck}$ $+\, 1.0 \cdot \texttt{touch\_puck}$ $+\, 3.0 \cdot \texttt{puck\_direction}$. This weighting provides feedback to learn useful behaviour quickly, such as moving towards and touching the puck. Yet, the weights are small enough to ensure that winning the game is crucial to maximizing the reward.
+
+The environment provides eighteen dimensional observations containing the coordinates, speed and orientation of both players and the puck. For more high-level information about the state of the game, we augment the observation space with the euclidean distance between all reasonable combinations of the two agents, the puck and both goals. This increases the dimension of the observation space to 27. 
+
+\subsubsection{Pink Noise}
+
+As TD3 is an off-policy algorithm, it is possible to replace the Gaussian distribution that is commonly used to sample action noise with temporally correlated noise, such as Ornstein-Uhlenbeck noise \cite{uhlenbeck30noise}, leading to a better state space coverage. Recently, it has been shown that temporally correlated Pink Noise is a good default choice that often outperforms other distributions and rarely performs statistically significantly worse in classic reinforcement learning settings \cite{eberhard-2023-pink}. Pink Noise is colored noise where the power spectral density is proportional to $f^{-1}$.
+
+\subsection{Experimental Evaluation}\label{subsec:td3_eval}
+
+To find the best approach for the final tournament, we conducted extensive experiments on both seen and unseen agents. The first experiments included different reward and architectures against the weak and strong \texttt{BasicOpponent}. After finding a setup that is good enough to beat the opponents it was trained against, we wanted to ensure that our agent is able to beat stronger, unseen agents. For this we did further experiments with more training steps, self-training and advanced techniques such as Pink Noise. 
+
+\begin{table}[]
+    \centering
+    \caption{Ablation study of TD3 showing the average win percentages and standard deviations across five seeds against the weak and strong \texttt{BasicOpponents}.}
+    \label{tab:td3_base_experiment}
+    \begin{tabular}{|c|c|c|c||l|l|} 
+    \hline
+    \textbf{Reward} & \textbf{Architecture} & \textbf{Activation} & \textbf{State Augm.} & \textbf{Weak Opponent} & \textbf{Strong Opponent} \\    \hline
+    Sparse & 256 $\times$ 256 & ReLU & / & $38.90\% \pm 22.19$ & $33.14\% \pm 15.75$ \\ 
+    Weighted & 256 $\times$ 256 & ReLU & / & $89.02\% \pm 20.37$ & $89.19\% \pm 19.05$ \\
+    Weighted & 256 $\times$ 256 & ReLU & \texttt{distance} & $\mathbf{99.06\% \pm 0.79}$ & $\mathbf{98.22\% \pm 0.97}$ \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{Base Experiments}
+
+Table~\ref{tab:td3_base_experiment} shows the ablation study to find the best setup for TD3 with the reward and state space augmentation. The full ablation study including the architecture and activation functions can be found in Table~\ref{tab:td3_base_experiment_full} in the Appendix. All experiments were conducted on the same set of five seeds and hyperparameters, to balance out the natural randomness of the environment and training process as suggested by \cite{henderson18matters}. 
+
+Every training run consisted of 3 million steps, where the opponent of each game was uniformly sampled from the weak and strong \texttt{BasicOpponents} after an initial starting period of 50,000 steps against the weak only. The final evaluation contains the win percentage against each opponent averaged across 1,000 games, along with one standard deviation. The hyperparameters can be found in Table~\ref{tab:td3_params} and were optimized for the experiment with the weighted reward, $(256 \times 256)$, ReLU activation function and without state space augmentation. We are aware that other settings might have performed better with a more thorough, specific optimization that was infeasible, because of compute constraints. 
+
+In the first experiment of the ablation we compare the sparse reward against the weighted reward. We can clearly see that the modified reward results in much better results for the amount of time steps trained. Next, we added the \texttt{distance} state augmentation, resulting in an approach that is consistently able to converge in a small number of steps and beat both \texttt{BasicOpponents}. Since we were very close to playing perfectly against these agents, we decided to switch to a more difficult setup to perform further optimization. 
+
+\subsubsection{Advanced Experiments}
+
+When playing against other trained agents that were able to always beat the \texttt{BasicOpponents}, it became apparent that just training against those opponents results in severe overfitting. While they are perfectly solving the environment they were trained in, they don't generalize to unseen opposing agents and their play styles are easily exploited. For this reason, we picked four agents from the experiments with the $(128 \times 128)$ and $(400 \times 300)$ architectures that beat the two \texttt{BasicOpponents} consistently. All experiments were trained for twelve million steps using the same hyperparameters as before. The experiments can be seen in Figure~\ref{fig:td3_experiments}. 
+
+%As all agents from all approaches across every seed were able to have an average win percentage of more than $95\%$ they were not included in the evaluation. We evaluate our agents every $100,000$ steps against for $1000$ games against the same set of opponents. Due to computational constraints, these experiments were done using only three seeds. 
+
+The left experiment includes our best setup from the base experiments, another version where we replace the Gaussian action noise with Pink Noise and both of these in combination with self-training. We start by playing just against both \texttt{BasicOpponents} until a win percentage of $90\%$ against the stronger one is reached. At that point, we start adding frozen copies of the agent to a pool of fifteen self-training opponents. Every $100,000$ steps the oldest version of them is removed and replaced. The best results would have been reached after eight million training steps and further training resulted in overfitting. Using a comparable set of unseen agents could have been used for unbiased early stopping.
+
+The second experiment on the right shows the results of self-training along with training against other strong, previously trained agents as well as a version that uses four stacked observations from consecutive time steps. If we use training against pretrained opponents, we additionally add a set of fifteen other strong, unseen agents to the set of opponents to uniformly sample from. They are added once one million steps with self-training have been done. These agents are unrelated to the ones we evaluate against.
+
+We can clearly see that self-training and particularly training against other strong agents helps with generalization. In all experiments Gaussian noise performed better than Pink Noise. We suspect that global state space exploration, as performed by Pink Noise, may be harmful in the \texttt{laser-hockey} environment, because the default spawn position in the middle of the field provides a good chance of defending the goal. Training against other trained agents along with self-training on the other hand resulted in the best results, leading to quick convergence, while also preventing overfitting.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{gfx/advanced_experiments_td3.pdf}
+    \caption{Fraction of games won for different TD3 setups against a set of unseen agents. Lines correspond to the mean performance; shaded areas correspond to one standard deviation across three seeds.}
+    \label{fig:td3_experiments}
+\end{figure}

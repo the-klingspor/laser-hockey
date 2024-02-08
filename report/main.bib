@@ -1,0 +1,327 @@
+@inproceedings{Hessel2018:Rainbow,
+  title={Rainbow: Combining Improvements in Deep Reinforcement Learning},
+  author={Matteo Hessel and Joseph Modayil and H. V. Hasselt and T. Schaul and Georg Ostrovski and W. Dabney and Dan Horgan and B. Piot and Mohammad Gheshlaghi Azar and D. Silver},
+  booktitle={AAAI},
+  year={2018}
+}
+
+@InProceedings{fujimoto2018:TD3, title = {Addressing Function Approximation Error in Actor-Critic Methods}, author = {Fujimoto, Scott and van Hoof, Herke and Meger, David}, booktitle = {Proceedings of the 35th International Conference on Machine Learning}, pages = {1587--1596}, year = {2018}, editor = {Jennifer Dy and Andreas Krause}, volume = {80}, series = {Proceedings of Machine Learning Research}, address = {Stockholmsmässan, Stockholm Sweden}, month = {10--15 Jul}, publisher = {PMLR}, pdf = {http://proceedings.mlr.press/v80/fujimoto18a/fujimoto18a.pdf}, url = {http://proceedings.mlr.press/v80/fujimoto18a.html}, abstract = {In value-based reinforcement learning methods such as deep Q-learning, function approximation errors are known to lead to overestimated value estimates and suboptimal policies. We show that this problem persists in an actor-critic setting and propose novel mechanisms to minimize its effects on both the actor and the critic. Our algorithm builds on Double Q-learning, by taking the minimum value between a pair of critics to limit overestimation. We draw the connection between target networks and overestimation bias, and suggest delaying policy updates to reduce per-update error and further improve performance. We evaluate our method on the suite of OpenAI gym tasks, outperforming the state of the art in every environment tested.} }
+
+@InProceedings{wang2016:DDQN,
+title = {Dueling Network Architectures for Deep Reinforcement Learning},
+author = {Ziyu Wang and Tom Schaul and Matteo Hessel and Hado Hasselt and Marc Lanctot and Nando Freitas},
+booktitle = {Proceedings of The 33rd International Conference on Machine Learning},
+pages = {1995--2003},
+year = 2016,
+editor = {Maria Florina Balcan and Kilian Q. Weinberger},
+volume = 48,
+series = {Proceedings of Machine Learning Research},
+address = {New York,
+New York,
+USA},
+month = {20--22 Jun},
+publisher = {PMLR},
+pdf = {http://proceedings.mlr.press/v48/wangf16.pdf},
+url = {http://proceedings.mlr.press/v48/wangf16.html},
+}
+
+@Article{Sehnke2010:PGPE,
+  Title                    = {Parameter-exploring policy gradients},
+  Author                   = {Frank Sehnke and Christian Osendorfer and Thomas R{\"u}ckstie{\ss} and Alex Graves and Jan Peters and J{\"u}rgen Schmidhuber},
+  Journal                  = {Neural Networks},
+  Year                     = {2010},
+  Number                   = {4},
+  Pages                    = {551-559},
+  Volume                   = {23},
+  Bibsource                = {DBLP, http://dblp.uni-trier.de},
+  Ee                       = {http://dx.doi.org/10.1016/j.neunet.2009.12.004},
+}
+
+
+@article{SchulmanEtAl2017:PPO,
+  author    = {John Schulman and
+               Filip Wolski and
+               Prafulla Dhariwal and
+               Alec Radford and
+               Oleg Klimov},
+  title     = {Proximal Policy Optimization Algorithms},
+  journal   = {CoRR},
+  volume    = {abs/1707.06347},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1707.06347},
+  archivePrefix = {arXiv},
+  eprint    = {1707.06347},
+}
+
+
+
+@Article{Peters08:NAC,
+  Title                    = {Natural {A}ctor-{C}ritic},
+  Author                   = {Peters, J. and Schaal, S.},
+  Journal                  = {Neurocomputing},
+  Year                     = {2008},
+  Number                   = {7-9},
+  Pages                    = {1180-1190},
+  Volume                   = {71},
+
+  Key                      = {reinforcement learning, policy gradient, natural actor-critic, natural gradients},
+  Url                      = {http://www-clmc.usc.edu/publications//P/peters-NC2008.pdf}
+}
+
+
+% SAC
+----------------------------------------------------------
+
+@misc{haarnoja2019soft,
+      title={Soft Actor-Critic Algorithms and Applications}, 
+      author={Tuomas Haarnoja and Aurick Zhou and Kristian Hartikainen and George Tucker and Sehoon Ha and Jie Tan and Vikash Kumar and Henry Zhu and Abhishek Gupta and Pieter Abbeel and Sergey Levine},
+      year={2019},
+      eprint={1812.05905},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@InProceedings{HaarnojaAbbeelLevine2018:SAC,
+  title = 	 {Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor},
+  author = 	 {Haarnoja, Tuomas and Zhou, Aurick and Abbeel, Pieter and Levine, Sergey},
+  booktitle = 	 {Proceedings of the 35th International Conference on Machine Learning},
+  pages = 	 {1861--1870},
+  year = 	 {2018},
+  editor = 	 {Dy, Jennifer and Krause, Andreas},
+  volume = 	 {80},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Stockholmsmässan, Stockholm Sweden},
+  month = 	 {10--15 Jul},
+  publisher = 	 {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v80/haarnoja18b/haarnoja18b.pdf},
+  url = 	 {http://proceedings.mlr.press/v80/haarnoja18b.html},
+  abstract = 	 {Model-free deep reinforcement learning (RL) algorithms have been demonstrated on a range of challenging decision making and control tasks. However, these methods typically suffer from two major challenges: very high sample complexity and brittle convergence properties, which necessitate meticulous hyperparameter tuning. Both of these challenges severely limit the applicability of such methods to complex, real-world domains. In this paper, we propose soft actor-critic, an off-policy actor-critic deep RL algorithm based on the maximum entropy reinforcement learning framework. In this framework, the actor aims to maximize expected reward while also maximizing entropy. That is, to succeed at the task while acting as randomly as possible. Prior deep RL methods based on this framework have been formulated as Q-learning methods. By combining off-policy updates with a stable stochastic actor-critic formulation, our method achieves state-of-the-art performance on a range of continuous control benchmark tasks, outperforming prior on-policy and off-policy methods. Furthermore, we demonstrate that, in contrast to other off-policy algorithms, our approach is very stable, achieving very similar performance across different random seeds.}
+}
+
+@book{Sutton1998,
+  added-at = {2019-07-13T10:11:53.000+0200},
+  author = {Sutton, Richard S. and Barto, Andrew G.},
+  biburl = {https://www.bibsonomy.org/bibtex/2f46601cf8b13d39d1378af0d79438b12/lanteunis},
+  edition = {Second},
+  interhash = {ac6b144aaec1819919a2fba9f705c852},
+  intrahash = {f46601cf8b13d39d1378af0d79438b12},
+  keywords = {},
+  publisher = {The MIT Press},
+  timestamp = {2019-07-13T10:11:53.000+0200},
+  title = {Reinforcement Learning: An Introduction},
+  url = {http://incompleteideas.net/book/the-book-2nd.html},
+  year = {2018 }
+}
+
+@phdthesis{max_ent,
+author = {Ziebart, Brian D.},
+advisor = {Bagnell, J. Andrew},
+title = {Modeling Purposeful Adaptive Behavior with the Principle of Maximum Causal Entropy},
+year = {2010},
+isbn = {9781124414218},
+publisher = {Carnegie Mellon University},
+address = {USA},
+abstract = {Predicting human behavior from a small amount of training examples is a challenging machine learning problem. In this thesis, we introduce the principle of maximum causal entropy, a general technique for applying information theory to decision-theoretic, game-theoretic, and control settings where relevant information is sequentially revealed over time. This approach guarantees decision-theoretic performance by matching purposeful measures of behavior (Abbeel \& Ng, 2004), and/or enforces game-theoretic rationality constraints (Aumann, 1974), while otherwise being as uncertain as possible, which minimizes worst-case predictive log-loss (Gr\"{u}nwald \& Dawid, 2003). We derive probabilistic models for decision, control, and multi-player game settings using this approach. We then develop corresponding algorithms for efficient inference that include relaxations of the Bellman equation (Bellman, 1957), and simple learning algorithms based on convex optimization. We apply the models and algorithms to a number of behavior prediction tasks. Specifically, we present empirical evaluations of the approach in the domains of vehicle route preference modeling using over 100,000 miles of collected taxi driving data, pedestrian motion modeling from weeks of indoor movement data, and robust prediction of game play in stochastic multi-player games.},
+note = {AAI3438449}
+}
+
+@misc{nikishin2022primacy,
+      title={The Primacy Bias in Deep Reinforcement Learning}, 
+      author={Evgenii Nikishin and Max Schwarzer and Pierluca D'Oro and Pierre-Luc Bacon and Aaron Courville},
+      year={2022},
+      eprint={2205.07802},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{kingma2022autoencoding,
+      title={Auto-Encoding Variational Bayes}, 
+      author={Diederik P Kingma and Max Welling},
+      year={2022},
+      eprint={1312.6114},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML}
+}
+
+@inproceedings{
+d'oro2023sampleefficient,
+title={Sample-Efficient Reinforcement Learning by Breaking the Replay Ratio Barrier},
+author={Pierluca D'Oro and Max Schwarzer and Evgenii Nikishin and Pierre-Luc Bacon and Marc G Bellemare and Aaron Courville},
+booktitle={The Eleventh International Conference on Learning Representations },
+year={2023},
+url={https://openreview.net/forum?id=OpC-9aBBVJe}
+}
+
+----------------------------------------------------------
+
+
+@article{mnih2015humanlevel,
+  author = {Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A. and Veness, Joel and Bellemare, Marc G. and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K. and Ostrovski, Georg and Petersen, Stig and Beattie, Charles and Sadik, Amir and Antonoglou, Ioannis and King, Helen and Kumaran, Dharshan and Wierstra, Daan and Legg, Shane and Hassabis, Demis},
+  description = {Human-level control through deep reinforcement learning - nature14236.pdf},
+  issn = {00280836},
+  journal = {Nature},
+  keywords = {deep learning toread},
+  month = feb,
+  number = 7540,
+  pages = {529--533},
+  title = {Human-level control through deep reinforcement learning},
+  url = {http://dx.doi.org/10.1038/nature14236},
+  volume = 518,
+  year = 2015
+}
+
+@misc{towers_gymnasium_2023,
+        title = {Gymnasium},
+        url = {https://zenodo.org/record/8127025},
+        abstract = {An API standard for single-agent reinforcement learning environments, with popular reference environments and related utilities (formerly Gym)},
+        urldate = {2023-07-08},
+        publisher = {Zenodo},
+        author = {Towers, Mark and Terry, Jordan K. and Kwiatkowski, Ariel and Balis, John U. and Cola, Gianluca de and Deleu, Tristan and Goulão, Manuel and Kallinteris, Andreas and KG, Arjun and Krimmel, Markus and Perez-Vicente, Rodrigo and Pierré, Andrea and Schulhoff, Sander and Tai, Jun Jet and Shen, Andrew Tan Jin and Younis, Omar G.},
+        month = mar,
+        year = {2023},
+        doi = {10.5281/zenodo.8127026},
+}
+
+@misc{wandb,
+title = {Experiment Tracking with Weights and Biases},
+year = {2020},
+note = {Software available from wandb.com},
+url={https://www.wandb.com/},
+author = {Biewald, Lukas},
+}
+
+@misc{kingma2017adam,
+      title={Adam: A Method for Stochastic Optimization}, 
+      author={Diederik P. Kingma and Jimmy Ba},
+      year={2017},
+      eprint={1412.6980},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{schaul2016prioritized,
+      title={Prioritized Experience Replay}, 
+      author={Tom Schaul and John Quan and Ioannis Antonoglou and David Silver},
+      year={2016},
+      eprint={1511.05952},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{haarnoja2018soft,
+      title={Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor}, 
+      author={Tuomas Haarnoja and Aurick Zhou and Pieter Abbeel and Sergey Levine},
+      year={2018},
+      eprint={1801.01290},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{vanhasselt2015deep,
+      title={Deep Reinforcement Learning with Double Q-learning}, 
+      author={Hado van Hasselt and Arthur Guez and David Silver},
+      year={2015},
+      eprint={1509.06461},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+
+@InProceedings{bellemare17distributional,
+  title = 	 {A Distributional Perspective on Reinforcement Learning},
+  author =       {Marc G. Bellemare and Will Dabney and R{\'e}mi Munos},
+  booktitle = 	 {Proceedings of the 34th International Conference on Machine Learning},
+  pages = 	 {449--458},
+  year = 	 {2017},
+  editor = 	 {Precup, Doina and Teh, Yee Whye},
+  volume = 	 {70},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--11 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v70/bellemare17a/bellemare17a.pdf},
+  url = 	 {https://proceedings.mlr.press/v70/bellemare17a.html},
+  abstract = 	 {In this paper we argue for the fundamental importance of the value distribution: the distribution of the random return received by a reinforcement learning agent. This is in contrast to the common approach to reinforcement learning which models the expectation of this return, or value. Although there is an established body of literature studying the value distribution, thus far it has always been used for a specific purpose such as implementing risk-aware behaviour. We begin with theoretical results in both the policy evaluation and control settings, exposing a significant distributional instability in the latter. We then use the distributional perspective to design a new algorithm which applies Bellman’s equation to the learning of approximate value distributions. We evaluate our algorithm using the suite of games from the Arcade Learning Environment. We obtain both state-of-the-art results and anecdotal evidence demonstrating the importance of the value distribution in approximate reinforcement learning. Finally, we combine theoretical and empirical evidence to highlight the ways in which the value distribution impacts learning in the approximate setting.}
+}
+
+
+@misc{fortunato2019noisy,
+      title={Noisy Networks for Exploration}, 
+      author={Meire Fortunato and Mohammad Gheshlaghi Azar and Bilal Piot and Jacob Menick and Ian Osband and Alex Graves and Vlad Mnih and Remi Munos and Demis Hassabis and Olivier Pietquin and Charles Blundell and Shane Legg},
+      year={2019},
+      eprint={1706.10295},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@inproceedings{misra2020MishAS,
+  title={Mish: A Self Regularized Non-Monotonic Activation Function},
+  author={Diganta Misra},
+  booktitle={British Machine Vision Conference},
+  year={2020},
+  url={https://api.semanticscholar.org/CorpusID:221113156}
+}
+
+@inproceedings{henderson18matters,
+    author = {Henderson, Peter and Islam, Riashat and Bachman, Philip and Pineau, Joelle and Precup, Doina and Meger, David},
+    title = {Deep Reinforcement Learning That Matters},
+    year = {2018},
+    isbn = {978-1-57735-800-8},
+    publisher = {AAAI Press},
+    abstract = {In recent years, significant progress has been made in solving challenging problems across various domains using deep reinforcement learning (RL). Reproducing existing work and accurately judging the improvements offered by novel methods is vital to sustaining this progress. Unfortunately, reproducing results for state-of-the-art deep RL methods is seldom straightforward. In particular, non-determinism in standard benchmark environments, combined with variance intrinsic to the methods, can make reported results tough to interpret. Without significance metrics and tighter standardization of experimental reporting, it is difficult to determine whether improvements over the prior state-of-the-art are meaningful. In this paper, we investigate challenges posed by reproducibility, proper experimental techniques, and reporting procedures. We illustrate the variability in reported metrics and results when comparing against common baselines and suggest guidelines to make future results in deep RL more reproducible. We aim to spur discussion about how to ensure continued progress in the field by minimizing wasted effort stemming from results that are non-reproducible and easily misinterpreted.},
+    booktitle = {Proceedings of the Thirty-Second AAAI Conference on Artificial Intelligence and Thirtieth Innovative Applications of Artificial Intelligence Conference and Eighth AAAI Symposium on Educational Advances in Artificial Intelligence},
+    articleno = {392},
+    numpages = {8},
+    location = {New Orleans, Louisiana, USA},
+    series = {AAAI'18/IAAI'18/EAAI'18}
+}
+
+@article{agrawal1995SampleMB,
+  title={Sample mean based index policies by O(log n) regret for the multi-armed bandit problem},
+  author={Rajeev Agrawal},
+  journal={Advances in Applied Probability},
+  year={1995},
+  volume={27},
+  pages={1054 - 1078},
+  url={https://api.semanticscholar.org/CorpusID:120313529}
+}
+
+@inproceedings{eberhard-2023-pink,
+  title = {Pink Noise Is All You Need: Colored Noise Exploration in Deep Reinforcement Learning},
+  author = {Eberhard, Onno and Hollenstein, Jakob and Pinneri, Cristina and Martius, Georg},
+  booktitle = {Proceedings of the Eleventh International Conference on Learning Representations (ICLR 2023)},
+  month = may,
+  year = {2023},
+  url = {https://openreview.net/forum?id=hQ9V5QN27eS},
+  month_numeric = {5}
+}
+
+@article{uhlenbeck30noise,
+  title = {On the Theory of the Brownian Motion},
+  author = {Uhlenbeck, G. E. and Ornstein, L. S.},
+  journal = {Phys. Rev.},
+  volume = {36},
+  issue = {5},
+  pages = {823--841},
+  numpages = {0},
+  year = {1930},
+  month = {Sep},
+  publisher = {American Physical Society},
+  doi = {10.1103/PhysRev.36.823},
+  url = {https://link.aps.org/doi/10.1103/PhysRev.36.823}
+}
+
+@inproceedings{lillicrap16ddpg,
+  added-at = {2019-07-12T20:04:55.000+0200},
+  author = {Lillicrap, Timothy P. and Hunt, Jonathan J. and Pritzel, Alexander and Heess, Nicolas and Erez, Tom and Tassa, Yuval and Silver, David and Wierstra, Daan},
+  biburl = {https://www.bibsonomy.org/bibtex/22708c349821330660afb992aec2be5d1/lanteunis},
+  booktitle = {ICLR},
+  editor = {Bengio, Yoshua and LeCun, Yann},
+  ee = {http://arxiv.org/abs/1509.02971},
+  interhash = {b791167abe535c8525f6a9bf62fcc1ab},
+  intrahash = {2708c349821330660afb992aec2be5d1},
+  keywords = {},
+  timestamp = {2019-07-12T20:04:55.000+0200},
+  title = {Continuous control with deep reinforcement learning.},
+  url = {http://dblp.uni-trier.de/db/conf/iclr/iclr2016.html#LillicrapHPHETS15},
+  year = 2016
+}
