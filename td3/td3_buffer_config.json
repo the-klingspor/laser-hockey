@@ -1,0 +1,8 @@
+{
+    "alpha": 0.5,
+    "beta": 0.4,
+    "observation_shape": 27,
+    "action_shape": 4,
+    "action_dtype_str": "float32",
+    "buffer_size": 1000000
+}

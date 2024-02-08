@@ -1,0 +1,11 @@
+{
+    "dim_states": 27,
+    "actor_hidden_layers": [256, 256],
+    "critic_hidden_layers": [256, 256],
+    "num_actions": 4,
+    "activation_function": "relu",
+    "reward": "simple",
+    "observation": "dist",
+    "device": "cuda",
+    "num_stacked_observations": 1
+}

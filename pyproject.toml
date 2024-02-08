@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "laser-hockey"
+version = "0.1.0"
+description = ""
+authors = ["Balint Mucsanyi <mucsanyibalint99@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.*"
+gymnasium = "^0.28.1"
+numpy = "^1.25.0"
+box2d-py = "^2.3.8"
+jupyter = "^1.0.0"
+matplotlib = "^3.7.1"
+torch = "^2.0.1"
+pygame = "^2.5.0"
+wandb = "^0.15.4"
+tqdm = "^4.65.0"
+colorednoise = "^2.1.0"
+tueplots = "^0.0.8"
+pandas = "^2.0.3"
+twisted = "^22.10.0"
+imageio = "^2.31.1"
+imageio-ffmpeg = "^0.4.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

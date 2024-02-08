@@ -1,0 +1,6 @@
+{
+    "optimizer_class": "adam",
+    "lr": 0.0001,
+    "scheduler_steps": [625000, 1000000],
+    "scheduler_factor": 0.5
+}

@@ -1,0 +1,60 @@
+{
+    "is_noisy": true,
+    "is_distributional": false,
+    "is_ddqn": false,
+    "is_per": true,
+    "is_self_training": true,
+    "batch_size": 32,
+    "max_grad_norm": 10,
+    "num_multistep": 1,
+    "train_frequency": 4,
+    "learning_starts": 80000,
+    "tau": 1,
+    "gradient_steps": 1,
+    "target_frequency": 1000,
+    "beta_start": 0.4,
+    "beta_end": 1,
+    "max_num_timesteps_in_episode": 250,
+    "exploration_initial_epsilon": 1,
+    "exploration_final_epsilon": 0.1,
+    "exploration_fraction": 0.0375,
+    "gamma": 0.95,
+    "total_timesteps": 12000000,
+    "num_eval_episodes": 200,
+    "num_eval_episodes_final": 1000,
+    "buffer_load_path": "",
+    "agent_weights": "",
+    "start_pretrained_delta": 1000000,
+    "poll_frequency": 50000,
+    "start_self_play_threshold": 0.9,
+    "opponents_eval_final": [],
+    "folders": [],
+    "opponents_train": [],
+    "opponents_eval": [
+        {
+            "agent_path": "checkpoints/rainbow_experiment_5_new_08.08.2023 16_37_38/best_agent",
+            "config_path": "checkpoints/rainbow_experiment_5_new_08.08.2023 16_37_38/agent_config.json"
+        },
+        {
+            "agent_path": "checkpoints/rainbow_experiment_5_new_08.08.2023 16_38_11/best_agent",
+            "config_path": "checkpoints/rainbow_experiment_5_new_08.08.2023 16_38_11/agent_config.json"
+        },
+        {
+            "agent_path": "checkpoints/rainbow_experiment_5_new_08.08.2023 16_38_13/best_agent",
+            "config_path": "checkpoints/rainbow_experiment_5_new_08.08.2023 16_38_13/agent_config.json"
+        },
+        {
+            "agent_path": "checkpoints/rainbow_experiment_6_new_08.08.2023 16_56_52/best_agent",
+            "config_path": "checkpoints/rainbow_experiment_6_new_08.08.2023 16_56_52/agent_config.json"
+        },
+        {
+            "agent_path": "checkpoints/rainbow_experiment_6_new_08.08.2023 16_59_59/best_agent",
+            "config_path": "checkpoints/rainbow_experiment_6_new_08.08.2023 16_59_59/agent_config.json"
+        },
+        {
+            "agent_path": "checkpoints/rainbow_experiment_6_new_08.08.2023 17_03_55/best_agent",
+            "config_path": "checkpoints/rainbow_experiment_6_new_08.08.2023 17_03_55/agent_config.json"
+        }
+    ],
+    "opponents": []
+}

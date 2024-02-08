@@ -1,0 +1,113 @@
+{
+    "_comment0": "The following parameters are used for the Agent",
+    "agent_config":
+    {
+        "dim_states": 27,
+        "alpha_temp" : 0.0, 
+        "actor_hidden_layers": [256, 256],
+        "critic_hidden_layers": [256, 256],
+        "num_actions": 4,
+        "num_stacked_observations": 1,
+        "tune_alpha_temp": true,
+        "augment_state": true,
+        "eval_only": false,
+
+
+        "pretrained_agent_path": "",
+        "pretrained_agent_pathsdasd": "",
+        "version": "sr",
+
+
+        "reward": "simple",
+        "replay_ratio": 1,
+        "selfplay": false,
+
+        "start_self_play_threshold": 0.9, 
+
+        "tau": 0.005,
+        "gamma": 0.95,
+        "observation": "dist",
+        
+        "activation_function": "relu",
+        "device": "cuda",
+        "batch_size": 128,
+
+        "opponents_train": [
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/best_agent_1",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_best_1.json"
+            },
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/best_agent_3",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_best_3.json" 
+            },
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/best_agent_4",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_best_4.json"
+
+            },
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/final_agent_1",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_final_1.json"
+            }
+        ],
+
+        "opponents_eval": [
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/best_agent_5",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_best_5.json"
+            },
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/final_agent_3",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_final_3.json"
+            },
+            {
+                "agent_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/final_agent_4",
+                "config_path": "./sac/checkpoints/other_agents/td3_tournament_iter_2/agent_config_final_4.json"
+            }
+        ]
+        
+       
+    },
+    
+
+    "_comment1": "The following parameters are used for the SAC algorithm",
+    "algorithm_config": 
+    {
+        "log": true,
+        "alpha_milestones": "100000 500000, 1000000", 
+        "alpha_lr":1e-4,
+
+        "update_target_every": 1,
+       
+        "max_timesteps": 2000000,
+        "network_reset": 1000000,
+        "max_steps": 250,
+        
+        "eval_episodes": 100,
+        "evaluation_timestep": 50000,
+
+        "is_per": 0,
+        "lr_milestones": "2500000",
+        "lr_factor": 0.5,
+        "lr": 3e-4
+    },
+    
+    "_comment2": "The following parameters are used for the Replay Buffer",
+    "buffer_config": 
+    {
+        "alpha": 0.5,             
+        "beta": 0.4,
+        "observation_shape": 27,
+        "action_shape": 4,
+        "action_dtype_str": "float32",
+        "buffer_size": 500000
+    },
+
+    "env_config":
+    {
+        "quiet": false 
+    }
+    
+
+}

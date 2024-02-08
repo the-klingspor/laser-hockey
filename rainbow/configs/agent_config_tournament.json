@@ -1,0 +1,16 @@
+{
+    "is_dueling": true,
+    "is_distributional": false,
+    "use_noisy_linear": false,
+    "v_min": -15,
+    "v_max": 15,
+    "atom_size": 51,
+    "dim_states": 27,
+    "hidden_layers": [512],
+    "num_actions": 24,
+    "num_stacked_observations": 4,
+    "activation_function": "relu",
+    "action_mode": "advanced",
+    "reward": "simple",
+    "observation": "dist"
+}
